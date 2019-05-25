@@ -1,0 +1,158 @@
+{% extends "layout.html" %}
+{% block playlist_block %}
+<div class="custom-scrollbar-playlist small rounded" id="songContainer">
+    <table class="table table-striped rounded table-dark table-hover">
+            <thead class="rounded thead-light">
+                <tr>
+                    <th scope="col">Name</th>
+                    <th scope="col">Album</th>
+                    <th scope="col">Artist</th>
+                    <th scope="col">Popularity</th>
+                    <th scope="col">Danceability</th>
+                    <th scope="col">Energy</th>
+                    <th scope="col">Key</th>
+                    <th scope="col">Tempo</th>
+                    <th scope="col">Time</th>
+                </tr>
+            </thead>
+                <tbody id="songLoader">
+                </tbody>
+    </table>
+</div>
+<script type="text/javascript" >
+let currentPageId = parseInt(window.location.pathname.match(/\d+$/));
+if (isNaN(currentPageId)) {
+    currentPageId = 0;
+}
+var currentSongCount = 0;
+let songLoader=document.getElementById('songLoader');
+let songContainer=document.getElementById('songContainer');
+//songContainer.addEventListener('scroll', getSongData(songLoader,currentPageId,currentSongCount));
+songContainer.addEventListener("scroll", loadLastSong);
+
+for (j = 0; j < 4; j++){
+    getSongData(songLoader,currentPageId);
+}
+
+function getSongData(element,playlistID){
+        fetch('http://127.0.0.1/getsong',{
+            headers: new Headers({
+            'Content-Type': 'application/json',
+            'Playlist-ID': playlistID,
+            'Counter': currentSongCount
+            })
+        })
+        .then((res) => { return res.json() })
+        .then((data) => {
+            let result = element.innerHTML;
+            data.forEach((song) => {
+                const { album, artist, name, popularity, danceability, energy, key, tempo, time_signature } = song
+                    result +=
+                    `<tr>
+                        <td>${name}</td>
+                        <td>${album}</td>
+                        <td>${artist}</td>
+                        <td>${popularity}</td>
+                        <td>${danceability}</td>
+                        <td>${energy}</td>
+                        <td>${key}</td>
+                        <td>${tempo}</td>
+                        <td>${time_signature}</td>
+                    </tr>`;
+                    element.innerHTML = result;
+                    });
+                })
+                currentSongCount+=5;
+                
+                
+}
+function loadLastSong(){
+    if (this.scrollHeight - this.scrollTop-100 <= this.clientHeight) {
+        getSongData(songLoader,currentPageId);
+    }
+}
+
+
+
+</script>
+{% endblock playlist_block %}
+{% block create_comment %}
+<div class="content-section">
+    <form method="POST" action="">
+        {{ form.hidden_tag() }}
+        <fieldset class="form-group">
+            <div class="form-group">
+                {{ form.content.label(class="form-control-label") }}
+                {% if form.content.errors %}
+                    {{ form.content(class="form-control form-control-lg is-invalid") }}
+                    <div class="invalid-feedback">
+                        {% for error in form.content.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    {{ form.content(class="form-control form-control-lg",rows="3",placeholder="Comment") }}
+                {% endif %}
+            </div>
+        </fieldset>
+        <div class="form-group text-right">
+            {{ form.submit(class="btn btn-outline-info") }}
+        </div>
+    </form>
+</div>
+{% endblock create_comment %}
+{% block comment_block %}
+<div class="container" id="postLoader"></div>
+
+<script type="text/javascript" >
+
+let currentPageId2 = parseInt(window.location.pathname.match(/\d+$/));
+if (isNaN(currentPageId2)) {
+    currentPageId2 = 0;
+}
+var currentPostCount = 0;
+let postLoader=document.getElementById('postLoader');
+//postContainer.addEventListener('scroll', getPostData(postLoader,currentPageId2,currentPostCount));
+window.addEventListener("scroll", loadLastPost);
+
+for (j = 0; j < 1; j++){
+    getPostData(postLoader,currentPageId2);
+}
+
+function getPostData(element,playlistID){
+        fetch('http://127.0.0.1/getpost',{
+            headers: new Headers({
+            'Content-Type': 'application/json',
+            'Playlist-ID': playlistID,
+            'Counter': currentPostCount
+            })
+        })
+        .then((res) => { return res.json() })
+        .then((data) => {
+            let result = element.innerHTML;
+            data.forEach((post) => {
+                const { content, date_posted, title, user_id, username } = post
+                    result +=
+                    `<article class="media content-section">
+                        <div class="media-body">
+                            <p class="lead font-weight-normal">${content}</p>
+                            <div class="article-metadata text-right">
+                                <a class="mr-2" href="#">${username}</a>
+                                <small class="text-muted">${date_posted}</small>
+                            </div>
+                        </div>
+                    </article>`;
+                    element.innerHTML = result;
+                    });
+                })
+                currentPostCount+=5;
+                
+                
+}
+function loadLastPost(){
+    if ((window.innerHeight + window.scrollY) +3 >= document.body.offsetHeight) {
+        getPostData(postLoader,currentPageId2);
+    }}
+
+</script>
+{% endblock comment_block %}

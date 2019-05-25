@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="{{url_for('static',filename='main.css')}}">
+    
+    {% if title_var %}
+        <title>Spotilab - {{ title_var }}</title>
+    {% else %}
+        <title>Spotilab</title>
+    {% endif %}
+</head>
+<body onload="loadForMissingScroll();">  
+    <div class="d-flex flex-column align-self-end">
+        <ul class="nav justify-content-end nav-pills">
+            <li class="nav-item">
+            {% if current_user.is_authenticated %}
+                <a class="nav-link active text-dark bg-transparent" href="http://127.0.0.1/logout">Logout</a>
+            {% else %}
+                <a class="nav-link active text-white bg-dark" href="http://127.0.0.1/login">Login</a>
+            {% endif %}
+            </li>
+        </ul>
+    </div>
+
+    <div class="d-flex align-items-center justify-content-center p-4">
+        <div class="d-flex flex-column ">
+        </div>
+    </div>
+
+
+    <div class="container-fluid fixed-left">
+        <div class="row">
+            <div class="col-2 fixed-bottom custom-left" id="leftPanel">
+                <div class="d-flex flex-column">
+                <!--<div class="row justify-content-center">
+                        <form  class="form-inline my-2 my-lg-0 justify-content-center ">
+                            <div class="input-group mb-3">
+                                <input type="text" class="form-control" placeholder="Search" aria-label="Search" aria-describedby="button-addon2">
+                                    <div class="input-group-append">
+                                        <button class="btn btn-outline-secondary" type="submit" id="button-addon2">Search</button>
+                                    </div>
+                            </div>
+                        </form>
+                    </div>-->
+                    <div class="row justify-content-center">
+                    <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
+                        <li class="nav-item">
+                          <a class="nav-link" id="pills-hot-tab" data-toggle="pill" href="#pills-hot" role="tab" aria-controls="pills-hot" aria-selected="false">Hot</a>
+                        </li>
+                        <li class="nav-item">
+                          <a class="nav-link " id="pills-new-tab" data-toggle="pill" href="#pills-new" role="tab" aria-controls="pills-new" aria-selected="false">New</a>
+                        </li>
+                        {% if current_user.is_authenticated %}
+                            <li class="nav-item">
+                              <a class="nav-link" id="pills-user-tab" data-toggle="pill" href="#pills-user" role="tab" aria-controls="pills-user" aria-selected="true">User</a>
+                            </li>
+                        {% endif %}
+                      </ul>
+                    </div>
+                    <!--<p>Lorem ipsum dolor sit amet</p>-->
+                        <div class="tab-content" id="pills-tabContent">
+                            <div class="tab-pane fade " id="pills-hot" role="tabpanel" aria-labelledby="pills-hot-tab">
+                                <div class="w-100 playlist-scroll rounded small" id="loaderHot" >fill me</div>
+                        </div>
+
+                        <div class="tab-pane fade" id="pills-new" role="tabpanel" aria-labelledby="pills-new-tab">
+                            <div class="w-100 playlist-scroll rounded small" id="loaderNew" >
+                            </div>
+                        </div>
+
+                        <div class="tab-pane fade" id="pills-user" role="tabpanel" aria-labelledby="pills-user-tab">
+                            <div class="w-100 playlist-scroll rounded small" id="loaderUser">
+                            </div>
+                        </div>
+                      </div>
+                </div>
+            </div>
+            <div class="col-2"></div>
+            <div class="col-7">
+                <div id="playlistTitle">
+                </div>
+                
+                {% block playlist_block %}
+                {% endblock %}
+                {% block create_comment %}
+                {% endblock  %}
+                {% block comment_block %}
+                {% endblock %}
+            </div>
+            <div class="col">
+                <h1>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.</h1>
+            </div>
+        </div>
+        
+        <div class="alert alert-light" role="alert">
+                A simple light alert with <a href="#" class="alert-link">an example link</a>. Give it a click if you like.
+        </div>
+    </div>
+    <div id="result"></div>
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+<script type="text/javascript" >
+let currentCount = parseInt(window.location.pathname.match(/\d+$/))-1;
+if (isNaN(currentCount)) {
+    currentCount=0;
+}
+let currentCountBottom=0;
+let currentCountTop=-1;
+let currentTopic = String(window.location.pathname.match(/([a-z])\w+/g));
+let cachedPlaylistCounter=0;
+
+if (currentTopic==='null') {
+    currentTopic='hot';
+}
+//document.getElementById('pills-new-tab').classList.add('active').setAttribute("aria-selected", true);
+
+const loaderNew=document.getElementById('loaderNew');
+const loaderNewButton=document.getElementById('pills-new-tab');
+const loaderUser=document.getElementById('loaderUser');
+const loaderUserButton=document.getElementById('pills-user-tab');
+
+const leftPanel=document.getElementById('leftPanel');
+const leftPanelInitialHeight=leftPanel.style.height;
+
+
+loaderNew.addEventListener('scroll', loadOnScroll);
+loaderNew.addEventListener('mouseover', scrollFixTop);
+loaderUser.addEventListener('scroll', loadCachedOnScroll);
+
+
+window.addEventListener('scroll', resizeLeftPanel);
+
+document.getElementById('pills-'+currentTopic+'-tab').classList.add('active');
+document.getElementById('pills-'+currentTopic).classList.add('show');
+document.getElementById('pills-'+currentTopic).classList.add('active');
+
+function loadForMissingScroll(){
+    //if (!(loaderNew.scrollHeight > loaderNew.clientHeight))
+
+    for (j = 0; j < 4; j++){
+        getPlaylistData(loaderNew,'last');
+        getCachedPlaylistData(loaderUser);
+    }
+    getPlaylistData(loaderNew,'first');
+    loaderNewButton.removeEventListener('click', loadForMissingScroll)
+}
+
+function getCachedPlaylistData(element){
+        fetch('http://127.0.0.1/cachedplaylist',{
+            headers: new Headers({
+            'Content-Type': 'application/json',
+            'Counter': cachedPlaylistCounter
+            })
+        })
+        .then((res) => { return res.json() })
+        .then((data) => {
+            let result = element.innerHTML;
+            data['items'].forEach((playlist) => {
+                const { id, name, owner, tracks } = playlist
+                    console.log(id);
+                    console.log(name);
+                    console.log(owner['id']);
+                    console.log(playlist);
+                    console.log(tracks['total']);
+                    result +=
+                    `<a href="#" onclick="getCachedSongData('${owner['id']}','${id}','${tracks['total']}','${name}',songLoader);" class="list-group-item list-group-item-action font-weight-bold" id="cachedSongLoader-${id}">${name}
+                    </a>`;
+                    element.innerHTML = result;
+                    //document.getElementById('cachedSongLoader-'+playlist.id).addEventListener("click", getCachedSongData);
+                    
+                    });
+                })
+                cachedPlaylistCounter+=5;
+        /*.then(() => {let cachedSongLoader=document.getElementById('cachedSongLoader');
+                if (cachedSongLoader){
+                    cachedSongLoader.addEventListener("click", getCachedSongData);
+                }})*/
+}
+
+function setCachedPlaylistTitle(playlistName,playlistGenres){
+    document.getElementById('playlistTitle').innerHTML=`<h1>${playlistName}</h1><h6>#${playlistGenres}</h6>`;
+}
+
+function getCachedSongData(ownerID,playlistSpotifyId,count,playlistName,element){
+        postLoader.innerHTML=``;
+        allPlaylists = document.querySelectorAll('[id^="cachedSongLoader-"]');
+        allPlaylists.forEach(function(playList){
+            playList.classList.add('text-dark');
+            playList.classList.add('bg-light');
+            playList.classList.remove('text-light');
+            playList.classList.remove('bg-dark');
+            });
+               
+        selectedPlaylist = document.getElementById('cachedSongLoader-'+playlistSpotifyId);
+        selectedPlaylist.classList.add('text-light');
+        selectedPlaylist.classList.add('bg-dark');
+        selectedPlaylist.classList.remove('text-dark');
+        selectedPlaylist.classList.remove('bg-light');
+        fetch('http://127.0.0.1/cachedsong?user_id='+ownerID+'&&playlist_id='+playlistSpotifyId+'&&start=0&&count='+count)
+        .then((res) => { return res.json() })
+        .then((data) => {
+            console.log(data.genres);
+            setCachedPlaylistTitle(playlistName,data.genres);
+            let result = ``;
+            data['items'].forEach((song) => {
+                //const { album, artist, name } = song
+                console.log(song);
+                //console.log(song.track.artists["0"].name);
+                //console.log(song.track.album.name);
+                console.log(song.track.name);
+                result +=
+                `<tr>
+                    <td>${song.track.name}</td>
+                    <td>${song.track.album.name}</td>
+                    <td>${song.track.artists["0"].name}</td>
+                    <td>${song.track.popularity}</td>
+                    <td>${song.features.danceability}</td>
+                    <td>${song.features.energy}</td>
+                    <td>${song.features.key}</td>
+                    <td>${song.features.tempo}</td>
+                    <td>${song.features.time_signature}</td>
+                </tr>`;
+                element.innerHTML = result;
+                    });
+                })
+}
+
+
+function getPlaylistData(element,selector){
+    if (selector ==='last'){
+        fetch('http://127.0.0.1/getplaylist',{
+            headers: new Headers({
+            'Content-Type': 'application/json',
+            'Counter': currentCount+currentCountBottom,
+            'Selector':'last'
+            })
+        })
+        .then((res) => { return res.json() })
+        .then((data) => {
+            let result = element.innerHTML;
+            data.forEach((playlist) => {
+                const { id, title, genre } = playlist
+                if ((id-1)==currentCount){
+                    document.getElementById('playlistTitle').innerHTML=`<h1>${title}</h1><h6>#${genre}</h6>`;
+                    result +=
+                    `<a href="/new/${id}" class="list-group-item list-group-item-action text-light bg-dark font-weight-normal">${title}
+                    <div class="badge badge-primary text-wrap text-dark bg-light font-weight-normal" style="width: auto;">${genre}</div>
+                    </a>`;
+                }else{
+                   result +=
+                    `<a href="/new/${id}" class="list-group-item list-group-item-action font-weight-bold">${title}
+                    <div class="badge badge-primary text-wrap text-light bg-dark font-weight-normal" style="width: auto;">${genre}</div>
+                    </a>`;
+                }
+                    element.innerHTML = result;
+                    });
+                })
+                currentCountBottom+=5;
+    }else if (selector ==='first' && currentCount+currentCountTop>=0){
+     fetch('http://127.0.0.1/getplaylist',{
+            headers: new Headers({
+            'Content-Type': 'application/json',
+            'Counter': currentCount+currentCountTop,
+            'Selector':'first'
+            })
+        })
+        .then((res) => { return res.json() })
+        .then((data) => {
+            let result = element.innerHTML;
+            data.forEach((playlist) => {
+                const { id, title, genre } = playlist
+                    result=`<a href="/new/${id}" class="list-group-item list-group-item-action font-weight-bold">${title}
+                    <div class="badge badge-primary text-wrap text-light bg-dark font-weight-normal" style="width: auto;">${genre}</div>
+                    </a>`+result;
+                    element.innerHTML = result;
+                    });
+                })
+                currentCountTop--;
+    }
+}
+
+function loadOnScroll() {
+    if (this.scrollHeight - this.scrollTop-10 <= this.clientHeight) {
+        getPlaylistData(this,'last');
+    }else if (this.scrollTop<10) {
+        getPlaylistData(this,'first');
+        this.scrollTo(0,11);
+    }
+}
+
+function loadCachedOnScroll() {
+    if (this.scrollHeight - this.scrollTop-10 <= this.clientHeight) {
+        getCachedPlaylistData(this,'first');
+
+    }
+}
+
+
+function scrollFixTop(){
+    if (!(loaderNew.scrollHeight > loaderNew.clientHeight)){
+        getPlaylistData(loaderNew,'first');
+        getPlaylistData(loaderNew,'first');
+        getPlaylistData(loaderNew,'first');
+        getPlaylistData(loaderNew,'first');
+        getPlaylistData(loaderNew,'first');
+        getPlaylistData(loaderNew,'first');
+        getPlaylistData(loaderNew,'first');
+        getPlaylistData(loaderNew,'first');
+        getPlaylistData(loaderNew,'first');
+        getPlaylistData(loaderNew,'first');
+        getPlaylistData(loaderNew,'first');
+        getPlaylistData(loaderNew,'first');
+        getPlaylistData(loaderNew,'first');
+        getPlaylistData(loaderNew,'first');
+    }
+    this.scrollTo(0,11);
+    loaderNew.removeEventListener('mouseover', scrollFixTop)
+}
+
+function resizeLeftPanel (){
+    if(window.scrollY*100/window.innerHeight<50){
+    leftPanel.setAttribute("style","height:"+leftPanelInitialHeight);
+    }else{
+    leftPanel.setAttribute("style","height:"+window.innerHeight+"px");
+    }
+}
+
+
+
+
+function loadCachedOnScroll() {
+    if (this.scrollHeight - this.scrollTop-10 <= this.clientHeight) {
+        getCachedPlaylistData(this,'last');
+    }else if (this.scrollTop<10) {
+        getCachedPlaylistData(this,'first');
+        this.scrollTo(0,11);
+    }
+}
+
+function delay(ms) {
+        var cur_d = new Date();
+        var cur_ticks = cur_d.getTime();
+        var ms_passed = 0;
+        while(ms_passed < ms) {
+            var d = new Date();  // Possible memory leak?
+            var ticks = d.getTime();
+            ms_passed = ticks - cur_ticks;
+            // d = null;  // Prevent memory leak?
+        }
+    }
+
+
+
+
+
+
+
+
+
+/*
+function getCachedSongData(){
+        fetch('http://127.0.0.1/cachedsong')
+        .then((res) => { return res.json() })
+        .then((data) => {
+            let result = ``;
+            data.forEach((song) => {
+                const { album, artist, name } = song
+                    result +=
+                    `<tr>
+                        <td>${name}</td>
+                        <td>${album}</td>
+                        <td>${artist}</td>
+                        <td>popularity</td>
+                        <td>danceability</td>
+                        <td>energy</td>
+                        <td>key</td>
+                        <td>tempo</td>
+                        <td>time</td>
+                    </tr>`;
+                    this.innerHTML = result;
+                    });
+                })   
+}
+*/
+
+
+</script>
+</body>
+</html>
