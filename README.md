@@ -7,7 +7,11 @@ Install miniconda > https://docs.conda.io/en/latest/miniconda.html
 
 Install python 3.7 > conda install python==3.7
 
-install pip > conda install pip
+Install dependencies > NT > pip install -r .\spotify-forum\requirements.txt
+
+Install dependencies > POSIX > pip install -r ./spotify-forum/requirements.txt
+
+Install pip > conda install pip
 
 run > NT > python .\spotify-forum\run.py
 
